@@ -1,0 +1,117 @@
+body {
+  background: #1e1e1e;
+  color: #e0e0e0;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  margin: 0;
+  padding: 2rem;
+}
+
+.container {
+  max-width: 900px;
+  margin: auto;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #ffffff;
+}
+
+.panel {
+  background: #2a2a2a;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(0,0,0,0.4);
+}
+
+.panel h2 {
+  margin-top: 0;
+  color: #9bd4ff;
+}
+
+h3 {
+  margin-top: 1.5rem;
+  color: #c0e8ff;
+}
+
+label {
+  display: block;
+  margin: 1rem 0;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: none;
+  background: #3a3a3a;
+  color: #e0e0e0;
+  font-family: monospace;
+}
+
+textarea.textblock {
+  height: 140px;
+}
+
+.btn {
+  background: #0078d4;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 1rem;
+  font-size: 1rem;
+}
+
+.btn-secondary {
+  background: #444;
+  margin-left: 0.5rem;
+}
+
+.btn:hover {
+  background: #0090ff;
+}
+
+.output {
+  background: #111;
+  padding: 1rem;
+  border-radius: 6px;
+  margin-top: 1rem;
+  overflow-x: auto;
+}
+
+.status {
+  margin-top: 0.5rem;
+  color: #9bd4ff;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+canvas {
+  background: #111;
+  border-radius: 6px;
+  margin-top: 1rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+th, td {
+  border: 1px solid #444;
+  padding: 0.4rem 0.6rem;
+  text-align: right;
+}
+
+th {
+  background: #333;
+}

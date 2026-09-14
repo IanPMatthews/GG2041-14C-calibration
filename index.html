@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Radiocarbon Calibration & Age–Depth Modelling</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="container">
+
+    <h1>Radiocarbon Calibration & Age–Depth Modelling</h1>
+
+    <section class="panel">
+      <h2>Calibration Curve</h2>
+      <p>Loading IntCal20 from <code>simplified_intcal20.json</code>…</p>
+      <div id="curve-status" class="status"></div>
+    </section>
+
+    <section class="panel">
+      <h2>Radiocarbon Calibration</h2>
+
+      <label>Radiocarbon age (yr BP)
+        <input type="number" id="rc-age">
+      </label>
+
+      <label>1σ uncertainty (yr)
+        <input type="number" id="rc-sigma">
+      </label>
+
+      <button id="calibrate-btn" class="btn">Calibrate</button>
+      <button id="download-calibration-csv" class="btn btn-secondary">
+        Download calibration CSV
+      </button>
+
+      <pre id="calibration-output" class="output"></pre>
+
+      <h3>Posterior summary</h3>
+      <div id="summary-output"></div>
+
+      <h3>Calibrated PDF (IntCal20)</h3>
+      <canvas id="calibration-chart"></canvas>
+    </section>
+
+    <section class="panel">
+      <h2>Piecewise Linear Age–Depth Model</h2>
+
+      <textarea id="tiepoints" rows="6" class="textblock"
+        placeholder="0, 5000
+100, 6000
+200, 8000"></textarea>
+
+      <div class="grid">
+        <label>Start depth (cm)
+          <input type="number" id="model-start" value="100">
+        </label>
+
+        <label>End depth (cm)
+          <input type="number" id="model-end" value="200">
+        </label>
+
+        <label>Resolution (cm)
+          <input type="number" id="model-step" value="1">
+        </label>
+      </div>
+
+      <button id="run-model-btn" class="btn">Run Model</button>
+      <button id="download-agedepth-csv" class="btn btn-secondary">
+        Download age–depth CSV
+      </button>
+
+      <pre id="agedepth-output" class="output"></pre>
+
+      <h3>Age–Depth Curve</h3>
+      <canvas id="agedepth-chart"></canvas>
+    </section>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
