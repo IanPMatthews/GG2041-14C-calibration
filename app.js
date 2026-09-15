@@ -161,7 +161,7 @@ function plotCalibrationPDF(xs, ys) {
 
   if (calibrationChart) calibrationChart.destroy();
 
-  // Compute summary for HPD bounds and markers
+  // Compute summary for HPD bounds
   const summary = computeSummary(xs, ys);
 
   const low = summary.hpd95.low - 200;
@@ -179,8 +179,7 @@ function plotCalibrationPDF(xs, ys) {
     data: {
       labels: tx,
       datasets: [
-
-        // HPD shading (must come first)
+        // HPD shading
         {
           label: "95% HPD",
           data: ty,
@@ -189,7 +188,6 @@ function plotCalibrationPDF(xs, ys) {
           backgroundColor: "rgba(0, 120, 212, 0.15)",
           fill: true
         },
-
         // Main PDF curve
         {
           label: "Calibrated PDF",
@@ -198,36 +196,6 @@ function plotCalibrationPDF(xs, ys) {
           backgroundColor: "rgba(0, 90, 158, 0.10)",
           pointRadius: 0,
           borderWidth: 2
-        },
-
-        // Vertical mean line
-        {
-          label: "Mean",
-          data: tx.map(() => summary.mean),
-          borderColor: "#d40000",
-          borderWidth: 2,
-          pointRadius: 0,
-          type: "line"
-        },
-
-        // Vertical median line
-        {
-          label: "Median",
-          data: tx.map(() => summary.median),
-          borderColor: "#008000",
-          borderWidth: 2,
-          pointRadius: 0,
-          type: "line"
-        },
-
-        // Vertical mode line
-        {
-          label: "Mode",
-          data: tx.map(() => summary.mode),
-          borderColor: "#0000d4",
-          borderWidth: 2,
-          pointRadius: 0,
-          type: "line"
         }
       ]
     },
