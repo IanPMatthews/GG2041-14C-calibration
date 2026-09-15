@@ -161,7 +161,7 @@ function plotCalibrationPDF(xs, ys) {
 
   if (calibrationChart) calibrationChart.destroy();
 
-  // Compute summary to get HPD bounds
+  // Compute summary for HPD bounds and markers
   const summary = computeSummary(xs, ys);
 
   const low = summary.hpd95.low - 200;
@@ -178,35 +178,80 @@ function plotCalibrationPDF(xs, ys) {
     type: "line",
     data: {
       labels: tx,
-      datasets: [{
-        label: "Calibrated PDF (IntCal20)",
-        data: ty,
-        borderColor: "#9bd4ff",
-        backgroundColor: "rgba(155, 212, 255, 0.2)",
-        pointRadius: 0,
-        borderWidth: 2
-      }]
+      datasets: [
+
+        // HPD shading (must come first)
+        {
+          label: "95% HPD",
+          data: ty,
+          borderWidth: 0,
+          pointRadius: 0,
+          backgroundColor: "rgba(0, 120, 212, 0.15)",
+          fill: true
+        },
+
+        // Main PDF curve
+        {
+          label: "Calibrated PDF",
+          data: ty,
+          borderColor: "#005a9e",
+          backgroundColor: "rgba(0, 90, 158, 0.10)",
+          pointRadius: 0,
+          borderWidth: 2
+        },
+
+        // Vertical mean line
+        {
+          label: "Mean",
+          data: tx.map(() => summary.mean),
+          borderColor: "#d40000",
+          borderWidth: 2,
+          pointRadius: 0,
+          type: "line"
+        },
+
+        // Vertical median line
+        {
+          label: "Median",
+          data: tx.map(() => summary.median),
+          borderColor: "#008000",
+          borderWidth: 2,
+          pointRadius: 0,
+          type: "line"
+        },
+
+        // Vertical mode line
+        {
+          label: "Mode",
+          data: tx.map(() => summary.mode),
+          borderColor: "#0000d4",
+          borderWidth: 2,
+          pointRadius: 0,
+          type: "line"
+        }
+      ]
     },
     options: {
       responsive: true,
       scales: {
         x: {
           title: { display: true, text: "Calendar age (yr BP)" },
-          ticks: { color: "#ccc" }
+          ticks: { color: "#333" }
         },
         y: {
           title: { display: true, text: "Probability density" },
-          ticks: { color: "#ccc" }
+          ticks: { color: "#333" }
         }
       },
       plugins: {
         legend: {
-          labels: { color: "#ddd" }
+          labels: { color: "#333" }
         }
       }
     }
   });
 }
+
 
 // Parse tie points
 function parseTiePoints(text) {
