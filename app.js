@@ -161,36 +161,39 @@ function plotCalibrationPDF(xs, ys) {
 
   if (calibrationChart) calibrationChart.destroy();
 
-  // Compute summary for HPD bounds
   const summary = computeSummary(xs, ys);
 
-  const low = summary.hpd95.low - 200;
-  const high = summary.hpd95.high + 200;
-
-  // Trim xs and ys to the relevant region
+  // Density-based trimming
+  const maxPDF = Math.max(...ys);
   const trimmed = xs.map((x, i) => ({ x, y: ys[i] }))
-    .filter(p => p.x >= low && p.x <= high);
+    .filter(p => p.y > maxPDF * 0.01);
 
   const tx = trimmed.map(p => p.x);
   const ty = trimmed.map(p => p.y);
+
+  // HPD shading band
+  const hpdBand = tx.map((x, i) => {
+    return (x >= summary.hpd95.low && x <= summary.hpd95.high)
+      ? ty[i]
+      : 0;
+  });
 
   calibrationChart = new Chart(ctx, {
     type: "line",
     data: {
       labels: tx,
       datasets: [
-       // Build HPD shading band
-const hpdBand = tx.map((x, i) => {
-  if (x >= summary.hpd95.low && x <= summary.hpd95.high) {
-    return ty[i];   // inside HPD → show PDF height
-  } else {
-    return 0;       // outside HPD → no shading
-  }
-});
-        // Main PDF curve
+        {
+          label: "95% HPD",
+          data: hpdBand,
+          borderWidth: 0,
+          pointRadius: 0,
+          backgroundColor: "rgba(0, 120, 212, 0.15)",
+          fill: true
+        },
         {
           label: "Calibrated PDF",
-          data: hpdBand,
+          data: ty,
           borderColor: "#005a9e",
           backgroundColor: "rgba(0, 90, 158, 0.10)",
           pointRadius: 0,
@@ -218,6 +221,7 @@ const hpdBand = tx.map((x, i) => {
     }
   });
 }
+
 
 
 // Parse tie points
