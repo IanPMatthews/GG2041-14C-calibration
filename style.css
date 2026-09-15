@@ -1,6 +1,8 @@
+/* --- Global layout --- */
+
 body {
-  background: #1e1e1e;
-  color: #e0e0e0;
+  background: #f7f7f7;
+  color: #222;
   font-family: 'Segoe UI', Roboto, sans-serif;
   margin: 0;
   padding: 2rem;
@@ -14,45 +16,60 @@ body {
 h1 {
   text-align: center;
   margin-bottom: 2rem;
-  color: #ffffff;
+  color: #333;
 }
 
+/* --- Panels --- */
+
 .panel {
-  background: #2a2a2a;
+  background: #ffffff;
   padding: 1.5rem;
   margin-bottom: 2rem;
   border-radius: 12px;
-  box-shadow: 0 0 12px rgba(0,0,0,0.4);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  border: 1px solid #e5e5e5;
 }
 
 .panel h2 {
   margin-top: 0;
-  color: #9bd4ff;
+  color: #005a9e;
 }
 
 h3 {
   margin-top: 1.5rem;
-  color: #c0e8ff;
+  color: #006bb3;
 }
+
+/* --- Inputs --- */
 
 label {
   display: block;
   margin: 1rem 0;
+  font-weight: 500;
 }
 
 input, textarea {
   width: 100%;
-  padding: 0.5rem;
+  padding: 0.6rem;
   border-radius: 6px;
-  border: none;
-  background: #3a3a3a;
-  color: #e0e0e0;
+  border: 1px solid #ccc;
+  background: #fafafa;
+  color: #222;
   font-family: monospace;
+  transition: border-color 0.2s;
+}
+
+input:focus, textarea:focus {
+  border-color: #0078d4;
+  outline: none;
+  background: #fff;
 }
 
 textarea.textblock {
   height: 140px;
 }
+
+/* --- Buttons --- */
 
 .btn {
   background: #0078d4;
@@ -63,29 +80,39 @@ textarea.textblock {
   cursor: pointer;
   margin-top: 1rem;
   font-size: 1rem;
-}
-
-.btn-secondary {
-  background: #444;
-  margin-left: 0.5rem;
+  transition: background 0.2s;
 }
 
 .btn:hover {
   background: #0090ff;
 }
 
+.btn-secondary {
+  background: #666;
+  margin-left: 0.5rem;
+}
+
+.btn-secondary:hover {
+  background: #777;
+}
+
+/* --- Output blocks --- */
+
 .output {
-  background: #111;
+  background: #f0f0f0;
   padding: 1rem;
   border-radius: 6px;
   margin-top: 1rem;
   overflow-x: auto;
+  border: 1px solid #ddd;
 }
 
 .status {
   margin-top: 0.5rem;
-  color: #9bd4ff;
+  color: #005a9e;
 }
+
+/* --- Grid layout --- */
 
 .grid {
   display: grid;
@@ -93,11 +120,17 @@ textarea.textblock {
   gap: 1rem;
 }
 
+/* --- Charts --- */
+
 canvas {
-  background: #111;
+  background: #ffffff;
   border-radius: 6px;
   margin-top: 1rem;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
 }
+
+/* --- Tables --- */
 
 table {
   width: 100%;
@@ -107,11 +140,12 @@ table {
 }
 
 th, td {
-  border: 1px solid #444;
+  border: 1px solid #ddd;
   padding: 0.4rem 0.6rem;
   text-align: right;
 }
 
 th {
-  background: #333;
+  background: #f2f2f2;
+  color: #333;
 }
