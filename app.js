@@ -163,13 +163,27 @@ function plotCalibrationPDF(xs, ys) {
 
   const summary = computeSummary(xs, ys);
 
-  // Density-based trimming
-  const maxPDF = Math.max(...ys);
-  const trimmed = xs.map((x, i) => ({ x, y: ys[i] }))
-    .filter(p => p.y > maxPDF * 0.01);
+// Density-based trimming
+const maxPDF = Math.max(...ys);
+let trimmed = xs.map((x, i) => ({ x, y: ys[i] }))
+  .filter(p => p.y > maxPDF * 0.01);
 
-  const tx = trimmed.map(p => p.x);
-  const ty = trimmed.map(p => p.y);
+// Extract trimmed x-range
+let tx = trimmed.map(p => p.x);
+let ty = trimmed.map(p => p.y);
+
+// Add ±200 yr padding
+const pad = 200;
+const paddedLow = tx[0] - pad;
+const paddedHigh = tx[tx.length - 1] + pad;
+
+// Re-trim xs/ys to padded range
+trimmed = xs.map((x, i) => ({ x, y: ys[i] }))
+  .filter(p => p.x >= paddedLow && p.x <= paddedHigh);
+
+tx = trimmed.map(p => p.x);
+ty = trimmed.map(p => p.y);
+
 
   // HPD shading band
   const hpdBand = tx.map((x, i) => {
