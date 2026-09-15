@@ -155,20 +155,32 @@ function renderSummary(summary) {
     </table>
   `;
 }
-
-// Plot calibrated PDF
+// plot cal pdf
 function plotCalibrationPDF(xs, ys) {
   const ctx = document.getElementById("calibration-chart").getContext("2d");
 
   if (calibrationChart) calibrationChart.destroy();
 
+  // Compute summary to get HPD bounds
+  const summary = computeSummary(xs, ys);
+
+  const low = summary.hpd95.low - 200;
+  const high = summary.hpd95.high + 200;
+
+  // Trim xs and ys to the relevant region
+  const trimmed = xs.map((x, i) => ({ x, y: ys[i] }))
+    .filter(p => p.x >= low && p.x <= high);
+
+  const tx = trimmed.map(p => p.x);
+  const ty = trimmed.map(p => p.y);
+
   calibrationChart = new Chart(ctx, {
     type: "line",
     data: {
-      labels: xs,
+      labels: tx,
       datasets: [{
         label: "Calibrated PDF (IntCal20)",
-        data: ys,
+        data: ty,
         borderColor: "#9bd4ff",
         backgroundColor: "rgba(155, 212, 255, 0.2)",
         pointRadius: 0,
@@ -195,6 +207,7 @@ function plotCalibrationPDF(xs, ys) {
     }
   });
 }
+
 // Parse tie points
 function parseTiePoints(text) {
   return text.split("\n")
