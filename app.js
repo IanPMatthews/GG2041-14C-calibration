@@ -179,19 +179,18 @@ function plotCalibrationPDF(xs, ys) {
     data: {
       labels: tx,
       datasets: [
-        // HPD shading
-        {
-          label: "95% HPD",
-          data: ty,
-          borderWidth: 0,
-          pointRadius: 0,
-          backgroundColor: "rgba(0, 120, 212, 0.15)",
-          fill: true
-        },
+       // Build HPD shading band
+const hpdBand = tx.map((x, i) => {
+  if (x >= summary.hpd95.low && x <= summary.hpd95.high) {
+    return ty[i];   // inside HPD → show PDF height
+  } else {
+    return 0;       // outside HPD → no shading
+  }
+});
         // Main PDF curve
         {
           label: "Calibrated PDF",
-          data: ty,
+          data: hpdBand,
           borderColor: "#005a9e",
           backgroundColor: "rgba(0, 90, 158, 0.10)",
           pointRadius: 0,
