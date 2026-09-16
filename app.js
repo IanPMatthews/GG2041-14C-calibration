@@ -161,31 +161,26 @@ function plotCalibrationPDF(xs, ys) {
 
   if (calibrationChart) calibrationChart.destroy();
 
+  // Full-summary for HPD
   const summary = computeSummary(xs, ys);
 
-// Density-based trimming
-const maxPDF = Math.max(...ys);
-let trimmed = xs.map((x, i) => ({ x, y: ys[i] }))
-  .filter(p => p.y > maxPDF * 0.01);
+  // 1. Density-based trimming
+  const maxPDF = Math.max(...ys);
+  let trimmed = xs.map((x, i) => ({ x, y: ys[i] }))
+    .filter(p => p.y > maxPDF * 0.01);
 
-// Extract trimmed x-range
-let tx = trimmed.map(p => p.x);
-let ty = trimmed.map(p => p.y);
+  // 2. Add ±200 yr padding around that trimmed range
+  const pad = 200;
+  const paddedLow = trimmed[0].x - pad;
+  const paddedHigh = trimmed[trimmed.length - 1].x + pad;
 
-// Add ±200 yr padding
-const pad = 200;
-const paddedLow = tx[0] - pad;
-const paddedHigh = tx[tx.length - 1] + pad;
+  trimmed = xs.map((x, i) => ({ x, y: ys[i] }))
+    .filter(p => p.x >= paddedLow && p.x <= paddedHigh);
 
-// Re-trim xs/ys to padded range
-trimmed = xs.map((x, i) => ({ x, y: ys[i] }))
-  .filter(p => p.x >= paddedLow && p.x <= paddedHigh);
+  const tx = trimmed.map(p => p.x);
+  const ty = trimmed.map(p => p.y);
 
-tx = trimmed.map(p => p.x);
-ty = trimmed.map(p => p.y);
-
-
-  // HPD shading band
+  // 3. HPD shading band on this final range
   const hpdBand = tx.map((x, i) => {
     return (x >= summary.hpd95.low && x <= summary.hpd95.high)
       ? ty[i]
@@ -235,6 +230,7 @@ ty = trimmed.map(p => p.y);
     }
   });
 }
+
 
 
 
