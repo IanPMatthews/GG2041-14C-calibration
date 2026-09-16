@@ -42,38 +42,44 @@
       <canvas id="calibration-chart"></canvas>
     </section>
 
-    <section class="panel">
-      <h2>Piecewise Linear Age–Depth Model</h2>
+<section class="panel">
+  <h2>Piecewise Linear Age–Depth Model</h2>
 
-      <textarea id="tiepoints" rows="6" class="textblock"
-        placeholder="0, 5000
-100, 6000
-200, 8000"></textarea>
+  <div class="input-hint">
+    Enter tie points in the format:<br>
+    <strong>depth, mean_age, low_95.4, high_95.4</strong><br>
+    Example:<br>
+    92, 10100, 10000, 10200<br>
+    97, 10167, 10080, 10250<br>
+    102, 10233, 10150, 10320
+  </div>
 
-      <div class="grid">
-        <label>Start depth (cm)
-          <input type="number" id="model-start" value="100">
-        </label>
+  <textarea id="tiepoints" rows="6" class="textblock"
+    placeholder="92, 10100, 10000, 10200
+97, 10167, 10080, 10250
+102, 10233, 10150, 10320"></textarea>
 
-        <label>End depth (cm)
-          <input type="number" id="model-end" value="200">
-        </label>
+  <div class="grid">
+    <label>Start depth (cm)
+      <input type="number" id="model-start" value="90">
+    </label>
 
-        <label>Resolution (cm)
-          <input type="number" id="model-step" value="1">
-        </label>
-      </div>
+    <label>End depth (cm)
+      <input type="number" id="model-end" value="110">
+    </label>
 
-      <button id="run-model-btn" class="btn">Run Model</button>
-      <button id="download-agedepth-csv" class="btn btn-secondary">
-        Download age–depth CSV
-      </button>
+    <label>Step (cm)
+      <input type="number" id="model-step" value="1">
+    </label>
+  </div>
 
-      <pre id="agedepth-output" class="output"></pre>
+  <button class="btn" id="run-model-btn">Run Age–Depth Model</button>
+  <button class="btn btn-secondary" id="download-agedepth-csv">Download CSV</button>
 
-      <h3>Age–Depth Curve</h3>
-      <canvas id="agedepth-chart"></canvas>
-    </section>
+  <pre id="agedepth-output" class="output"></pre>
+  <canvas id="agedepth-chart" height="200"></canvas>
+</section>
+
 
   </div>
 
