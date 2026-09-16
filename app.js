@@ -277,7 +277,6 @@ function buildAgeDepthModel(points, start, end, step) {
 }
 
 
-// Plot age–depth model
 function plotAgeDepth(model) {
   const ctx = document.getElementById("agedepth-chart").getContext("2d");
 
@@ -293,23 +292,25 @@ function plotAgeDepth(model) {
     data: {
       labels: depths,
       datasets: [
-        // Upper bound
+        // LOWER bound first
         {
-          label: "95.4% range",
+          label: "95.4% lower",
+          data: lows,
+          borderWidth: 0,
+          backgroundColor: "rgba(0, 120, 212, 0.0)",
+          fill: false
+        },
+
+        // UPPER bound second — fill down to previous dataset
+        {
+          label: "95.4% upper",
           data: highs,
           borderWidth: 0,
           backgroundColor: "rgba(0, 120, 212, 0.15)",
           fill: "-1"
         },
-        // Lower bound
-        {
-          label: "95.4% range",
-          data: lows,
-          borderWidth: 0,
-          backgroundColor: "rgba(0, 120, 212, 0.15)",
-          fill: true
-        },
-        // Mean line
+
+        // Mean curve last
         {
           label: "Mean age",
           data: means,
@@ -327,6 +328,7 @@ function plotAgeDepth(model) {
     }
   });
 }
+
 
 // CSV download helper
 function downloadCSV(filename, header, rows) {
