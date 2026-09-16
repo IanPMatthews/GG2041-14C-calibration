@@ -240,15 +240,17 @@ function parseTiePoints(text) {
     .map(l => l.trim())
     .filter(l => l.length)
     .map(l => {
-      const [d, a] = l.split(",").map(Number);
-      return { depth: d, age: a };
+      const [d, mean, low, high] = l.split(",").map(Number);
+      return { depth: d, mean, low, high };
     })
     .sort((a, b) => a.depth - b.depth);
 }
 
+
 // Build piecewise linear age–depth model
 function buildAgeDepthModel(points, start, end, step) {
   const out = [];
+
   for (let d = start; d <= end; d += step) {
     let seg = null;
     for (let i = 0; i < points.length - 1; i++) {
@@ -258,24 +260,31 @@ function buildAgeDepthModel(points, start, end, step) {
         break;
       }
     }
+
     if (!seg) {
-      out.push({ depth: d, age: null });
+      out.push({ depth: d, mean: null, low: null, high: null });
     } else {
       out.push({
         depth: d,
-        age: linearInterp(d, seg.p1.depth, seg.p1.age, seg.p2.depth, seg.p2.age)
+        mean: linearInterp(d, seg.p1.depth, seg.p1.mean, seg.p2.depth, seg.p2.mean),
+        low:  linearInterp(d, seg.p1.depth, seg.p1.low,  seg.p2.depth, seg.p2.low),
+        high: linearInterp(d, seg.p1.depth, seg.p1.high, seg.p2.depth, seg.p2.high)
       });
     }
   }
+
   return out;
 }
+
 
 // Plot age–depth model
 function plotAgeDepth(model) {
   const ctx = document.getElementById("agedepth-chart").getContext("2d");
 
-  const depths = model.filter(r => r.age !== null).map(r => r.depth);
-  const ages = model.filter(r => r.age !== null).map(r => r.age);
+  const depths = model.filter(r => r.mean !== null).map(r => r.depth);
+  const means  = model.filter(r => r.mean !== null).map(r => r.mean);
+  const lows   = model.filter(r => r.low  !== null).map(r => r.low);
+  const highs  = model.filter(r => r.high !== null).map(r => r.high);
 
   if (agedepthChart) agedepthChart.destroy();
 
@@ -283,31 +292,37 @@ function plotAgeDepth(model) {
     type: "line",
     data: {
       labels: depths,
-      datasets: [{
-        label: "Age–Depth",
-        data: ages,
-        borderColor: "#9bd4ff",
-        backgroundColor: "rgba(155, 212, 255, 0.2)",
-        pointRadius: 0,
-        borderWidth: 2
-      }]
+      datasets: [
+        // Upper bound
+        {
+          label: "95.4% range",
+          data: highs,
+          borderWidth: 0,
+          backgroundColor: "rgba(0, 120, 212, 0.15)",
+          fill: "-1"
+        },
+        // Lower bound
+        {
+          label: "95.4% range",
+          data: lows,
+          borderWidth: 0,
+          backgroundColor: "rgba(0, 120, 212, 0.15)",
+          fill: true
+        },
+        // Mean line
+        {
+          label: "Mean age",
+          data: means,
+          borderColor: "#005a9e",
+          borderWidth: 2,
+          pointRadius: 0
+        }
+      ]
     },
     options: {
-      responsive: true,
       scales: {
-        x: {
-          title: { display: true, text: "Depth (cm)" },
-          ticks: { color: "#ccc" }
-        },
-        y: {
-          title: { display: true, text: "Age (yr BP)" },
-          ticks: { color: "#ccc" }
-        }
-      },
-      plugins: {
-        legend: {
-          labels: { color: "#ddd" }
-        }
+        x: { title: { display: true, text: "Depth (cm)" } },
+        y: { title: { display: true, text: "Age (yr BP)" } }
       }
     }
   });
@@ -382,27 +397,27 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   // Age–depth model button
-  document.getElementById("run-model-btn").onclick = () => {
-    const points = parseTiePoints(document.getElementById("tiepoints").value);
-    const start = Number(document.getElementById("model-start").value);
-    const end = Number(document.getElementById("model-end").value);
-    const step = Number(document.getElementById("model-step").value);
+document.getElementById("run-model-btn").onclick = () => {
+  const points = parseTiePoints(document.getElementById("tiepoints").value);
+  const start = Number(document.getElementById("model-start").value);
+  const end = Number(document.getElementById("model-end").value);
+  const step = Number(document.getElementById("model-step").value);
 
-    const out = document.getElementById("agedepth-output");
+  const out = document.getElementById("agedepth-output");
 
-    try {
-      const model = buildAgeDepthModel(points, start, end, step);
-      lastAgeDepthModel = model;
+  try {
+    const model = buildAgeDepthModel(points, start, end, step);
 
-      out.textContent = "depth_cm, age_yr_BP\n" +
-        model.map(r => `${r.depth}, ${r.age ?? "NA"}`).join("\n");
+    out.textContent = "depth_cm, mean_age, low_95, high_95\n" +
+      model.map(r => `${r.depth}, ${r.mean ?? "NA"}, ${r.low ?? "NA"}, ${r.high ?? "NA"}`).join("\n");
 
-      plotAgeDepth(model);
+    plotAgeDepth(model);
 
-    } catch (err) {
-      out.textContent = `Error: ${err.message}`;
-    }
-  };
+  } catch (err) {
+    out.textContent = `Error: ${err.message}`;
+  }
+};
+
 
   // Age–depth CSV download
   document.getElementById("download-agedepth-csv").onclick = () => {
